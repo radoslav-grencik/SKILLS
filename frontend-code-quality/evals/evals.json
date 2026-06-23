@@ -1,0 +1,41 @@
+{
+  "skill_name": "frontend-code-quality",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "In this React component, fix the bug where changing the selected country does not clear the selected city. Keep the change small and follow nearby style.",
+      "expected_output": "Implements a narrow bug fix, prefers event-level or simple state flow over adding broad effects, and does not introduce generic form abstractions.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Refactor src/features/users/UserForm.tsx to simplify the duplicated validation logic and run the relevant tests.",
+      "expected_output": "Treats this as a concrete scoped refactor, edits directly after inspection, avoids a broad refactor plan gate, and keeps behavior unchanged.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "This dashboard frontend has become messy. Refactor the forms, tables, filters, and route structure so it is cleaner.",
+      "expected_output": "Treats this as a broad refactor, inspects first, proposes a plan, states what will not be abstracted, and waits for confirmation before editing.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Review this merge request that changes several React hooks and TypeScript form schemas. Focus on frontend code quality and regressions.",
+      "expected_output": "Responds in code-review mode with findings first, severity ordering, concrete file/line references where possible, risks, and testing gaps; avoids generic praise.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Replace this hand-written grouping loop with the utility we already use in the app. The project has lodash-es imported elsewhere.",
+      "expected_output": "Reuses the existing utility dependency without adding a new dependency, checks local usage first, and only uses docs if API behavior is unclear or risky.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Move this one-off JSX block into a shared configurable renderer because three fields look similar.",
+      "expected_output": "Pushes back on premature abstraction, explains that direct JSX or small local structure is preferable unless the fields share behavior and real reuse.",
+      "files": []
+    }
+  ]
+}
