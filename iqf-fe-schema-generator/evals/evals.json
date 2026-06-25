@@ -25,13 +25,13 @@
     },
     {
       "id": 3,
-      "prompt": "Vygeneruj FormSchema/UpdateSchema pre novu IQF entitu, ktorej DetailSchema dedi z `domainSchema`. DTO obsahuje len editovatelne polia a id. Zachovaj lokalne konvencie pomenovania, ale rozhodni spravny base schema pre update/form schemu.",
-      "expected_output": "Agent recognizes that form/update schemas model editable payloads and usually extend `baseSchema`, even when the read/detail schema extends `domainSchema`; it only uses more specific base schemas when local convention or DTO contract requires it.",
+      "prompt": "Vygeneruj FormSchema/UpdateSchema pre novu IQF entitu, ktorej DetailSchema dedi z `domainSchema`. Backend ma dve mozne edit kontrakty: `MonitoringUpdateDto` ako Java record s editovatelnymi poliami a samostatny `MonitoringUpdateView` anotovany `@View`. Zachovaj lokalne konvencie pomenovania, ale rozhodni spravny base schema pre kazdy zdroj.",
+      "expected_output": "Agent distinguishes the form/update schema base by backend source: DTO/record/payload-backed schemas are plain `z.object(...)` with only editable payload fields, while `@View`-backed form/update schemas extend `baseSchema`. It does not infer `baseSchema` or `domainSchema` solely from the related entity or DetailSchema inheritance.",
       "files": [],
       "assertions": [
-        "Chooses `baseSchema` for `FormSchema`/`UpdateSchema` by default when consistent with local form/update schemas.",
-        "Does not infer form/update base schema solely from entity inheritance or the detail schema base.",
-        "Bases editable fields on `Dto`/`SaveDto`/`UpdateDto`, not on `DetailView`."
+        "Uses plain `z.object(...)` for `Dto`/Java record/payload-backed `FormSchema`/`UpdateSchema` instead of extending `baseSchema` by default.",
+        "Extends `baseSchema` for form/update schemas only when the backend source is a `@View` contract or the actual payload contract requires base fields.",
+        "Does not infer form/update base schema solely from entity inheritance or the related `DetailSchema` base."
       ]
     },
     {

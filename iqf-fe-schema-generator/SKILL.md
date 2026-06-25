@@ -5,7 +5,7 @@ description: Use when generating, finding, or updating IQF frontend Zod schemas 
 
 # IQF FE Schema Generator
 
-Generate, find, and update frontend Zod schemas for IQF modules from backend `@View` classes and `Dto` classes. Keep the generated FE schemas aligned with the backend projection model and with existing FE module conventions in the current project.
+Generate, find, and update frontend Zod schemas for IQF modules from backend `@View` classes, `Dto` classes, Java records, and similar payload classes. Keep the generated FE schemas aligned with the backend projection model and with existing FE module conventions in the current project.
 
 ## First Questions
 
@@ -21,7 +21,7 @@ If the user asks to find or update existing schemas, search for the existing sch
 
 At the start of work in any repository, discover the local IQF layout instead of assuming project-specific paths:
 
-- Locate backend modules by searching for Java sources containing `@View(`, `BaseObject`, `DomainObject`, `TitledObject`, `DictionaryObject`, and `Dto` classes.
+- Locate backend modules by searching for Java sources containing `@View(`, `BaseObject`, `DomainObject`, `TitledObject`, `DictionaryObject`, `Dto` classes, Java records, and payload/command classes.
 - Locate frontend modules by searching for `package.json`, `tsconfig.json`, `vite.config.*`, `next.config.*`, `src/modules`, `schema.ts`, and `schemas/*.ts`.
 - Locate existing IQF FE base schemas by searching for exports/imports of `baseSchema`, `domainSchema`, `titledSchema`, and `dictionarySchema`.
 - Locate package aliases from `tsconfig.json`, bundler config, and existing imports before adding new imports.
@@ -35,7 +35,7 @@ Existing FE schemas are useful for layout, naming, imports, Zod style, and exist
 
 1. Locate the backend module and inspect relevant Java files.
 2. Find classes annotated with `@View(...)`; these drive read schemas.
-3. Find relevant `Dto` classes; these usually drive form/edit validation schemas.
+3. Find relevant `Dto`, Java record, command, or payload classes; these usually drive form/edit validation schemas.
 4. Locate the target frontend module using the discovered FE layout and existing module naming.
 5. Inspect existing nearby schemas, exports, API callers, hooks, and naming conventions before editing.
 6. Generate or update only the minimal set of schema files needed.
@@ -50,7 +50,7 @@ Focus on these backend inputs:
 - `*BrowseView`, `*ListView`, `*LabeledView`, `*IdView`: usually map to browse/list/id/reference schemas used by tables, options, and nested relations.
 - `*DetailView`: usually maps to detail schemas used by data forms and detail pages.
 - `*CreateView`, `*UpdateView`: may map to create/update/detail schemas depending on the endpoint contract.
-- `*Dto`, `*SaveDto`, `*UpdateDto`, `*CreateDto`: usually map to form schemas used for edit/create validation.
+- `*Dto`, `*SaveDto`, `*UpdateDto`, `*CreateDto`, Java records, commands, and similar payload classes: usually map to form schemas used for edit/create validation.
 - Superclasses, parent interfaces, and inherited fields/getters; never ignore inherited members when they are part of the serialized contract.
 
 When a view extends another view class, read the parent view too and represent the inherited shape in FE by extending or composing the corresponding FE schema if one exists.
@@ -73,7 +73,11 @@ Frontend equivalents are usually existing IQF FE schemas. In many IQF projects t
 
 For read schemas, choose the most specific existing base schema that matches the BE class hierarchy. Do not duplicate base fields in every generated schema when an FE base schema already provides them.
 
-For `FormSchema`, `SaveSchema`, and `UpdateSchema`, prefer the local form/update convention over entity inheritance. These schemas usually model an editable payload and in IQF frontends should most often extend `baseSchema`, even when the corresponding read/detail schema extends `domainSchema`, `titledSchema`, or `dictionarySchema`. Use a more specific base schema for form/update schemas only when nearby form/update schemas already do so or the DTO contract clearly requires it.
+For `FormSchema`, `SaveSchema`, and `UpdateSchema`, first identify the backend source of the editable contract:
+
+- If the source is a BE `@View` class/interface, the generated form/update schema should extend `baseSchema`. IQF `@View` payloads expose object identity through the view contract, so keep that base object shape even when the corresponding read/detail schema extends `domainSchema`, `titledSchema`, or `dictionarySchema`.
+- If the source is a `Dto`, `SaveDto`, `UpdateDto`, `CreateDto`, Java `record`, command object, or similar payload class, generate a plain `z.object(...)` that contains only the editable payload fields. Do not add `baseSchema` just because the related entity or read/detail view inherits from `BaseObject`.
+- Use a more specific base schema for form/update schemas only when the actual BE form/update source is a `@View` contract that exposes it, nearby form/update schemas already establish that convention for the same source type, or the backend payload contract clearly requires those inherited base fields.
 
 ## Schema Types
 
@@ -81,7 +85,7 @@ Typical FE schemas are:
 
 - `BrowseSchema`: for data table/list responses; based on `*BrowseView`, `*ListView`, `*LabeledView`, or equivalent read views.
 - `DetailSchema`: for detail pages and data forms; based on `*DetailView` and related detail views.
-- `FormSchema`/`SaveSchema`/`UpdateSchema`: for data form validation in edit/create mode; usually based on `Dto`, `SaveDto`, `UpdateDto`, or `CreateDto`, not on detail views. These schemas usually extend `baseSchema` and then add editable DTO fields.
+- `FormSchema`/`SaveSchema`/`UpdateSchema`: for data form validation in edit/create mode; usually based on `Dto`, `SaveDto`, `UpdateDto`, `CreateDto`, Java `record`, command object, or a form/update `@View`. Extend `baseSchema` when the source is a BE `@View`; use plain `z.object(...)` when the source is a DTO/record/payload class.
 
 Match existing naming style in the module. Many IQF frontends use lower-camel exports such as `monitoringBrowseSchema`, `monitoringDetailSchema`, `monitoringUpdateSchema`, and types like `MonitoringBrowse`, but some projects may use PascalCase schema names. Follow the local convention.
 
@@ -143,15 +147,15 @@ For read schemas:
 - Use `.nullish()` when the backend field can be absent or null.
 - Keep fields required only when the backend view contract clearly guarantees presence.
 
-For form schemas from DTOs:
+For form schemas from DTOs, records, commands, and similar payload classes:
 
 - Consider a field required only when the property has an explicit non-null validation annotation or equivalent validation logic. Common annotations include `@NotNull`, `@NonNull`, `@Nonnull`, `@NotBlank`, `@NotEmpty`, and project-specific aliases/wrappers around these annotations. Confirm imports because annotation names can come from different packages.
 - Inspect validation annotations on fields, getters, constructor parameters, and relevant superclass fields.
 - Inspect usages of the DTO, generated `@View` class, controller/service methods, validators, mappers, and form submission code for additional validation logic that affects requiredness or constraints.
 - Add non-null and other validation rules only to `FormSchema`/save/update schemas, not to browse/detail/read schemas.
 - Do not infer required form fields only from Java primitive types, database column metadata, field names, or domain intuition. Require an annotation or discovered validation path.
-- Add newly exposed DTO fields and remove fields that no longer exist in the current DTO/form contract.
-- Update field schemas when DTO field types, nested DTO/view types, collection item types, enum/value representations, nullability, or validation annotations change.
+- Add newly exposed payload fields and remove fields that no longer exist in the current payload/form contract.
+- Update field schemas when DTO/record/payload field types, nested DTO/view types, collection item types, enum/value representations, nullability, or validation annotations change.
 - Use existing FE schemas only to preserve local Zod expression style, helpers, and message conventions. Do not preserve old fields, nullability, or validation constraints unless they are still backed by the current BE source or discovered validation logic.
 - Preserve existing FE-only cross-field validation (`.refine(...)`, `.superRefine(...)`), helper functions, transforms, and messages when updating form/update schemas only if they still match the current BE/form contract. Update or remove them when BE fields, nullability, validation annotations, validators, services, or form submission behavior changed.
 
@@ -183,9 +187,9 @@ When the user asks to find or update schemas:
 Before finishing:
 
 - Every generated read schema has a clear BE `@View` source.
-- Every generated form schema has a clear DTO source.
+- Every generated form schema has a clear BE source: DTO/record/payload class or form/update `@View`.
 - Read schemas extend the correct FE base schema for the BE inheritance chain.
-- Form/update schemas follow local editable-payload conventions and usually extend `baseSchema`.
+- Form/update schemas extend `baseSchema` only for BE `@View` sources or when the actual payload contract requires base fields; DTO/record/payload sources use plain `z.object(...)`.
 - Existing FE-only refinements, transforms, helper functions, and localized validation messages are updated or removed when they no longer match the current BE/form contract.
 - Cross-module BE views are resolved to existing schemas, newly created schemas within the agreed scope, or explicitly reported as missing.
 - Imports follow local alias/relative style.
@@ -200,7 +204,7 @@ Use these search patterns as starting points:
 
 ```text
 @View\(
-class .*Dto
+class .*Dto|record .*Dto|record .*Command|record .*Payload|class .*Command|class .*Payload
 @NotNull|@NonNull|@Nonnull|@NotBlank|@NotEmpty|@Size|@Min|@Max|@Pattern|@Email
 new .*Dto|\.toDto\(|DtoMapper|Validator|validate\(
 extends BaseObject|extends DomainObject|extends TitledObject|extends DictionaryObject
