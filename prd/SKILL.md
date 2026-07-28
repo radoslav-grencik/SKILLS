@@ -1,6 +1,6 @@
 ---
 name: prd
-description: Create or update PRD.json files for ralphy-cli autonomous coding loops. Use this when the user asks to create a PRD, split work into ralphy tasks, prepare task-plan JSON, update task completion, add/remove/reorder tasks, or organize independent work into parallel groups.
+description: Create or update `PRD.json` files used by ralphy-cli autonomous coding loops. Use this skill only when the user specifically wants ralphy/ralphy-cli task planning data, asks to create or edit `PRD.json`, split work into ralphy tasks, prepare ralphy task-plan JSON, update task completion, add/remove/reorder PRD tasks, or organize ralphy work into dependency-aware parallel groups. Do not use for ordinary product requirements documents, casual planning, todos, implementation plans, or generic JSON task lists unless they are explicitly for ralphy-cli or `PRD.json`.
 ---
 
 You are a PRD (Product Requirements Document) specialist for ralphy-cli. Your role is to create and manage PRD.json files that track tasks for the autonomous AI coding loop.

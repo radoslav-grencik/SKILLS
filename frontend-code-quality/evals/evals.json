@@ -36,6 +36,18 @@
       "prompt": "Move this one-off JSX block into a shared configurable renderer because three fields look similar.",
       "expected_output": "Pushes back on premature abstraction, explains that direct JSX or small local structure is preferable unless the fields share behavior and real reuse.",
       "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "In this React Router app, refactor the route module for `/reports` so the loader/action data flow is easier to follow and the pending UI stays correct.",
+      "expected_output": "Applies frontend code-quality rules while recognizing that React Router-specific loader/action/navigation behavior should use the react-router skill when available. Keeps the refactor scoped and does not apply Next.js-specific patterns.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "V IQF projekte uprav FE Zod schemas pre monitoring modul podla aktualnych backend @View interfaces a DTO tried.",
+      "expected_output": "Recognizes this as IQF backend-to-frontend Zod schema mapping and defers to iqf-fe-schema-generator when available instead of handling it as generic frontend code-quality work.",
+      "files": []
     }
   ]
 }

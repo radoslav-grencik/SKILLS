@@ -1,6 +1,6 @@
 ---
 name: iqf-fe-schema-generator
-description: Use when generating, finding, or updating IQF frontend Zod schemas from IQF backend modules in any IQF project, especially for BE @View classes, Dto classes, BrowseSchema, DetailSchema, FormSchema, schema.ts, or schemas/*.ts. Always use this skill when the user mentions IQF FE schema generation, BE module to FE schema mapping, or asks to find/update existing IQF schemas.
+description: Specialized workflow for IQF frontend Zod schemas and backend-to-frontend schema mapping. Always use this skill, instead of generic frontend code-quality skills, when generating, finding, comparing, or updating FE schemas from IQF backend modules/classes, including BE @View interfaces/classes, DTOs, Java records, commands, BrowseSchema, DetailSchema, FormSchema, SaveSchema, UpdateSchema, schema.ts, schemas/*.ts, Zod schema exports, module schema sync, or requests like "vygeneruj/uprav FE schemas" for an IQF module. Also use when the user asks to locate existing IQF schemas or align FE schemas with current BE sources.
 ---
 
 # IQF FE Schema Generator

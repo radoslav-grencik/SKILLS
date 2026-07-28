@@ -66,6 +66,28 @@
         "Adds newly introduced backend fields and updates changed types, nested schemas, enum schemas, nullability, and requiredness.",
         "Updates `.refine(...)`/`.superRefine(...)` rules when referenced fields or backend validation semantics changed."
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Najdi existujuce IQF FE schemas pre modul `case-management`, porovnaj ich s aktualnymi BE @View a Dto zdrojmi a povedz, ktore schema.ts alebo schemas/*.ts subory treba upravit. Neber stare FE schemas ako source of truth.",
+      "expected_output": "Agent uses the IQF schema workflow to locate existing FE schemas, maps them back to current backend @View/Dto sources, identifies stale or missing fields/nullability/validation, and reports or updates only the relevant schema files.",
+      "files": [],
+      "assertions": [
+        "Treats the request as IQF schema discovery and backend-to-frontend schema sync, not generic frontend cleanup.",
+        "Finds existing `schema.ts` or `schemas/*.ts` files before deciding whether to create new schemas.",
+        "Uses current backend sources as the authority over previous FE schema contents."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Vygeneruj/uprav FE schemas pre IQF modul fakturacie: BrowseSchema, DetailSchema a SaveSchema maju sediet na BE view interfaces, Java record payload a lokalny Zod export style.",
+      "expected_output": "Agent triggers the specialized IQF FE schema generation path from the casual Slovak phrasing, handles BrowseSchema/DetailSchema/SaveSchema from the correct backend sources, and follows local Zod export naming/import conventions.",
+      "files": [],
+      "assertions": [
+        "Recognizes `vygeneruj/uprav FE schemas` for an IQF module as a specialized schema-generation task.",
+        "Maps read schemas to backend view interfaces and save/form schemas to the Java record or payload source.",
+        "Follows existing local Zod export style instead of inventing new naming or layout conventions."
+      ]
     }
   ]
 }

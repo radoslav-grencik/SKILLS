@@ -30,6 +30,18 @@
       "prompt": "We are in a monorepo and I did not specify where PRD.json belongs. Prepare ralphy tasks for billing reports, but ask me for the target PRD path instead of silently writing to the repo root.",
       "expected_output": "Recognizes ambiguous target path in a monorepo, asks for the intended PRD.json location, and does not create or modify a root PRD.json without confirmation.",
       "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Write a normal product requirements document for a billing dashboard with goals, users, scope, and acceptance criteria. This is not for ralphy-cli and I do not want PRD.json.",
+      "expected_output": "Recognizes this is an ordinary product requirements document request, not a ralphy-cli PRD.json task, and does not create or modify PRD.json.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Create a generic JSON todo list for the next frontend sprint, but do not use ralphy-cli or PRD.json.",
+      "expected_output": "Does not treat a generic JSON todo list as a ralphy PRD task, avoids the PRD.json workflow, and either answers normally or asks whether ralphy/PRD.json is intended before editing files.",
+      "files": []
     }
   ]
 }

@@ -1,6 +1,6 @@
 ---
 name: frontend-code-quality
-description: General frontend coding discipline for JavaScript, TypeScript, React, and Next.js work. Use this skill whenever writing, refactoring, or reviewing frontend application code, components, hooks, utilities, schemas, state handling, or UI logic. It helps keep FE code simple, idiomatic to the existing codebase, minimally exported, type-safe through inference, aligned with React best practices, and explicit about low-quality files encountered during edits. For React tasks, also use vercel-react-best-practices.
+description: General frontend coding discipline for JavaScript, TypeScript, React, React Router, and Next.js implementation work. Use this skill for substantive frontend component, hook, utility, state, form, UI logic, refactor, or review tasks where code quality choices matter. Do not use this skill for IQF frontend Zod schema generation or backend-to-frontend schema mapping; use iqf-fe-schema-generator for those tasks when available. It helps keep FE code simple, idiomatic to the existing codebase, minimally exported, type-safe through inference, aligned with React best practices, and explicit about low-quality files encountered during edits. For React component or Next.js tasks, also use vercel-react-best-practices when available. For React Router routing, route module, loader, action, fetcher, navigation, pending UI, SSR/SPA/pre-rendering, or upgrade tasks, also use react-router when available.
 ---
 
 # Frontend Code Quality
@@ -16,6 +16,7 @@ Apply KISS: keep it simple, stupid. Start with the most direct solution that sat
 Before changing code, inspect nearby files and similar existing implementations.
 
 Use the dominant local style as the default for:
+
 - File organization and naming
 - Import ordering and path aliases
 - Component structure
@@ -37,6 +38,7 @@ For a concrete scoped refactor where the user clearly asked for implementation, 
 The goal of a refactor is almost never abstraction or unification by itself. Do not chase DRY mechanically. Do not turn straightforward JSX into generic field configuration arrays, factories, render registries, or shared abstractions just because several lines look similar. Repetition is often cheaper than an abstraction that hides behavior.
 
 Focus refactors almost exclusively on code quality:
+
 - Simplify control flow
 - Make state flow easier to understand
 - Remove unnecessary effects, refs, state, exports, and types
@@ -46,6 +48,7 @@ Focus refactors almost exclusively on code quality:
 - Make the component easier to read without changing behavior
 
 For broad refactors, the proposal should include:
+
 - Files that would be changed
 - Main structural changes
 - What complexity would be removed
@@ -64,6 +67,7 @@ If the user asks for a small concrete change, bug fix, or implementation task, d
 When editing or reading a file for the current task, notice whether the file is materially low quality: tangled responsibilities, repeated logic, unsafe typing, unclear state flow, excessive effects, fragile abstractions, or code that makes the requested change risky.
 
 Do not derail the current task into a broad cleanup unless the cleanup is necessary for the requested change. Instead:
+
 - Remember the exact file path
 - Keep a concise reason for why the file is low quality
 - Tell the user that the file quality is poor and should be fixed after the current change is complete
@@ -72,6 +76,7 @@ Do not derail the current task into a broad cleanup unless the cleanup is necess
 Only flag meaningful quality debt. Do not complain about minor style differences, old code that is merely unfamiliar, or code that is outside the files you actually inspected.
 
 Common examples of low-quality FE code:
+
 - A component mixes too many responsibilities: form shell, permissions, data fetching, mutation invalidation, field dependency cleanup, action rendering, and the full field layout in one place
 - `useEffect` is used to patch derived form state when a clearer event-level update or narrower dependency flow would be possible
 - `useRef` stores previous values only to drive business logic, making state transitions harder to reason about
@@ -97,6 +102,7 @@ Prefer direct, local code over abstraction. A helper is worthwhile when it remov
 Avoid overengineering. Do not introduce generic frameworks, factories, strategy maps, polymorphic abstractions, reusable hooks, context providers, or configuration layers unless the current code has enough real complexity to justify them. A plain conditional, local variable, or direct JSX block is often the best solution.
 
 Before creating a custom function, check whether:
+
 - The codebase already has an equivalent helper
 - The platform already provides it
 - An installed utility library such as lodash already provides it and is used in this codebase
@@ -111,6 +117,7 @@ Keep module APIs narrow.
 Only export values that are used from another file or are intentionally public entry points. Keep implementation details private to the file.
 
 Avoid exporting:
+
 - One-off helper functions
 - Local-only constants
 - Types used only by one component or one function
@@ -123,6 +130,7 @@ If something is only needed in the same file, leave it unexported. If a future u
 Let TypeScript infer what it can infer cleanly. Explicit types are useful at boundaries, not everywhere.
 
 Prefer inference for:
+
 - Function return types when the return expression is clear
 - Local variables
 - Inline callbacks
@@ -130,6 +138,7 @@ Prefer inference for:
 - Derived values
 
 Add explicit types when they improve safety or communication, especially for:
+
 - Public function parameters
 - External API payloads
 - Form values crossing module boundaries
@@ -147,6 +156,7 @@ Avoid `as`. Treat assertions as a last resort. Prefer narrowing, parsing, schema
 For React or Next.js work, also apply the `vercel-react-best-practices` skill.
 
 Keep components and hooks simple:
+
 - Derive values during render when possible
 - Prefer event handlers for interaction logic instead of effects
 - Use `useEffect` only for synchronizing with external systems, subscriptions, timers, browser APIs, or imperative libraries
@@ -159,14 +169,20 @@ For JSX conditional blocks, prefer guarded rendering when the `else` branch is o
 Prefer this for one-sided conditionals:
 
 ```tsx
-{!!condition && <div />}
+{
+  !!condition && <div />;
+}
 ```
 
 Avoid this by default when there is no meaningful `else` branch:
 
 ```tsx
-{condition ? <div /> : null}
-{condition ? <div /> : <></>}
+{
+  condition ? <div /> : null;
+}
+{
+  condition ? <div /> : <></>;
+}
 ```
 
 Move stable code outside the component when it does not need props, state, context, hooks, or closure variables. Good candidates include constants, option arrays, schemas, simple formatters, regexes, and pure helper functions.
@@ -238,6 +254,7 @@ export default {
 Prefer hook extraction for real external synchronization, not for every block of logic. Good hook candidates include timers, DOM event listeners, portals, scroll tracking, query-state synchronization, virtualized lists, and browser API integration. Pure render derivations can usually stay inline.
 
 When effects are necessary, make them honest and cleanup-safe:
+
 - Use `AbortController` for DOM listeners when useful
 - Cancel throttled or debounced callbacks during cleanup
 - Keep dependencies accurate instead of hiding stale closures
@@ -279,6 +296,7 @@ Use existing dependencies consistently. If the project already uses a utility li
 When a task depends on unfamiliar, subtle, or changing library behavior, study the library's documentation through Context7 MCP if it is available. Resolve the library ID, then query the relevant docs before relying on assumptions about APIs, recommended patterns, edge cases, or migration behavior.
 
 Use Context7 especially when:
+
 - Introducing a new usage of an installed package
 - Debugging behavior from a third-party component or hook
 - Refactoring integration code around a package API
@@ -294,12 +312,14 @@ Do not add a new dependency for a trivial helper. Do not import a large utility 
 When the user asks for a frontend code review, prioritize defects and risks over style commentary.
 
 Report findings first, ordered by severity. Each finding should include:
+
 - File and line reference when available
 - What can break or regress
 - Why the issue matters in user-visible or maintenance terms
 - A concrete fix direction, without rewriting the whole file unless asked
 
 Look especially for:
+
 - Stale closures, incorrect effect dependencies, missing cleanup, and derived state stored unnecessarily
 - Event logic hidden in effects when an event-level update would be safer
 - Unsafe type assertions, over-broad types, or validation gaps at API/form boundaries
@@ -313,6 +333,7 @@ Do not fill the review with generic praise. If there are no findings, say so exp
 ## Review Checklist
 
 Before finishing, check:
+
 - Does the code match the dominant style of nearby frontend files?
 - If the user asked for a broad refactor, did I propose the refactor and wait for confirmation before editing?
 - If the user asked for a concrete scoped refactor, did I keep the implementation narrow instead of turning it into a broader rewrite?
