@@ -1,6 +1,7 @@
 ---
 name: frontend-code-quality
-description: General frontend coding discipline for JavaScript, TypeScript, React, React Router, and Next.js implementation work. Use this skill for substantive frontend component, hook, utility, state, form, UI logic, refactor, or review tasks where code quality choices matter. Do not use this skill for IQF frontend Zod schema generation or backend-to-frontend schema mapping; use iqf-fe-schema-generator for those tasks when available. It helps keep FE code simple, idiomatic to the existing codebase, minimally exported, type-safe through inference, aligned with React best practices, and explicit about low-quality files encountered during edits. For React component or Next.js tasks, also use vercel-react-best-practices when available. For React Router routing, route module, loader, action, fetcher, navigation, pending UI, SSR/SPA/pre-rendering, or upgrade tasks, also use react-router when available.
+description: >-
+  General frontend coding discipline for JavaScript, TypeScript, React, and Next.js implementation work. Use this skill for substantive frontend component, hook, utility, state, form, UI logic, refactor, or review tasks where code quality choices matter. This is a generic fallback, not the primary skill for specialized domains: if the task involves IQF frontend Zod schemas, backend-to-frontend schema mapping, BE @View/DTO/record sources, schema.ts, schemas/*.ts, BrowseSchema, DetailSchema, FormSchema, SaveSchema, or UpdateSchema, use iqf-fe-schema-generator instead of this skill. If the task involves React Router route modules, loaders, actions, fetchers, navigation, pending UI, params/search params, SSR/SPA/pre-rendering, middleware, or routing upgrades, also use react-router. For React component or Next.js tasks, also use vercel-react-best-practices when available.
 ---
 
 # Frontend Code Quality
@@ -10,6 +11,14 @@ Use this skill when writing or changing frontend code in JavaScript or TypeScrip
 Prefer code that a teammate can read once and safely modify later. Avoid adding API surface, names, helpers, types, or React state unless they clearly pay for themselves.
 
 Apply KISS: keep it simple, stupid. Start with the most direct solution that satisfies the requirement, then add structure only when the current problem proves it is needed. Do not build for hypothetical future variants, extension points, or reuse that the task does not actually require.
+
+## Specialized Skills First
+
+This skill is intentionally generic. When the task matches a narrower frontend-adjacent skill, apply the narrower skill first and use this skill only as supporting code-quality guidance.
+
+- For IQF frontend Zod schemas, backend-to-frontend schema mapping, BE `@View`/DTO/record sources, `schema.ts`, `schemas/*.ts`, `BrowseSchema`, `DetailSchema`, `FormSchema`, `SaveSchema`, or `UpdateSchema`, switch to `iqf-fe-schema-generator`. Do not handle IQF schema generation as ordinary frontend cleanup.
+- For React Router route modules, `loader`, `action`, `clientLoader`, `clientAction`, fetchers, forms, navigation, pending UI, params/search params, SSR/SPA/pre-rendering, middleware, or React Router upgrades, also apply `react-router` before making routing/data-flow decisions.
+- For React and Next.js component, hook, data-fetching, rendering, or performance-sensitive work, also apply `vercel-react-best-practices`.
 
 ## First Read The Codebase
 

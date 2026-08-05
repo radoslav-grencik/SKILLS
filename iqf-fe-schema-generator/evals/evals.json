@@ -88,6 +88,17 @@
         "Maps read schemas to backend view interfaces and save/form schemas to the Java record or payload source.",
         "Follows existing local Zod export style instead of inventing new naming or layout conventions."
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Sprav frontend code-quality review a type-safety cleanup v IQF module objednavok: pozri schema.ts a schemas/*.ts, porovnaj Zod schemas s aktualnymi BE @View interfaces, DTO a Java record payloadmi a oprav nesulad.",
+      "expected_output": "Agent treats the request as the specialized IQF FE schema workflow despite the frontend-code-quality wording, uses backend @View/DTO/record sources as the source of truth, and updates or reports only the relevant schema files.",
+      "files": [],
+      "assertions": [
+        "Triggers the IQF FE schema workflow even though the prompt says frontend code-quality review and type-safety cleanup.",
+        "Compares `schema.ts` or `schemas/*.ts` against current backend `@View`, DTO, and Java record payload sources.",
+        "Does not treat existing frontend schemas as the source of truth when backend contracts differ."
+      ]
     }
   ]
 }

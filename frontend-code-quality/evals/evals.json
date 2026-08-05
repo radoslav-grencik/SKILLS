@@ -45,9 +45,14 @@
     },
     {
       "id": 8,
-      "prompt": "V IQF projekte uprav FE Zod schemas pre monitoring modul podla aktualnych backend @View interfaces a DTO tried.",
-      "expected_output": "Recognizes this as IQF backend-to-frontend Zod schema mapping and defers to iqf-fe-schema-generator when available instead of handling it as generic frontend code-quality work.",
-      "files": []
+      "prompt": "Pouzi frontend-code-quality, ale v IQF projekte uprav FE Zod schemas pre monitoring modul podla aktualnych backend @View interfaces a DTO tried.",
+      "expected_output": "Recognizes this as IQF backend-to-frontend Zod schema mapping even though the user mentioned frontend-code-quality, and switches to iqf-fe-schema-generator when available instead of handling it as generic frontend code-quality work.",
+      "files": [],
+      "assertions": [
+        "Does not proceed with IQF schema generation using only generic frontend-code-quality guidance.",
+        "Explicitly identifies the task as IQF backend-to-frontend Zod schema mapping.",
+        "Uses or defers to `iqf-fe-schema-generator` when that skill is available."
+      ]
     }
   ]
 }
