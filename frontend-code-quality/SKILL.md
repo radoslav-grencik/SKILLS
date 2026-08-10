@@ -160,6 +160,20 @@ Do not export types unless another file needs them.
 
 Avoid `as`. Treat assertions as a last resort. Prefer narrowing, parsing, schema validation, discriminated unions, `satisfies`, or better generic constraints. If an assertion is unavoidable, keep it as narrow and local as possible.
 
+## Modern JavaScript And TypeScript
+
+Use modern JavaScript and TypeScript when the project tooling supports it and the result is clearer. Prefer built-in language and platform features over older imperative patterns or custom helpers.
+
+Good defaults include:
+
+- Use `array.at(-1)` for the last item when it is clearer than `array[array.length - 1]`
+- Use `toSorted`, `toReversed`, `toSpliced`, or spread copies when avoiding mutation matters, instead of mutating with `sort`, `reverse`, or `splice`
+- Use `flatMap`, `findLast`, `findLastIndex`, `Object.groupBy`, `Object.fromEntries`, `structuredClone`, optional chaining, nullish coalescing, and logical assignment where they simplify the code and are available in the target runtime
+- Use `Promise.allSettled`, `Promise.any`, `AbortController`, `URL`, `URLSearchParams`, `Intl`, and other standard platform APIs instead of ad-hoc equivalents
+- Use `satisfies`, const type parameters, discriminated unions, and precise generic constraints when they improve type safety without adding ceremony
+
+Do not use modern syntax just to be fashionable. If a newer API is not supported by the project's browser/runtime targets, polyfill strategy, TypeScript lib config, or local conventions, choose the established project-safe alternative. Preserve readability: a short `for...of` loop is still better than a dense chain when the logic has branching, side effects, or needs named intermediate values.
+
 ## React Code
 
 For React or Next.js work, also apply the `vercel-react-best-practices` skill.
