@@ -1,7 +1,7 @@
 ---
 name: iqf-fe-schema-generator
 description: >-
-  Primary skill for IQF frontend Zod schemas and backend-to-frontend schema mapping. Always use this skill before generic frontend-code-quality when an IQF project task mentions Zod schemas, FE schemas, schema.ts, schemas/*.ts, Zod exports, backend @View interfaces/classes, DTOs, Java records, commands, BrowseSchema, DetailSchema, FormSchema, SaveSchema, UpdateSchema, module schema sync, or aligning frontend schemas with current BE sources. Triggers even if the user phrases it as frontend cleanup, form validation, type safety, schema review, or "vygeneruj/uprav FE schemas" for an IQF module.
+  Primary skill for IQF frontend Zod schemas and backend-to-frontend schema mapping. Always use this skill before generic frontend-code-quality when an IQF project task mentions Zod schemas, FE schemas, schema.ts, schemas/*.ts, Zod exports, backend @View interfaces/classes, DTOs, Java records, commands, BrowseSchema, DetailSchema, FormSchema, SaveSchema, UpdateSchema, module schema sync, or aligning frontend schemas with current BE sources. Also use this skill automatically whenever you create, edit, or remove an IQF backend @View, DTO, Java record, command, payload, or similar API contract class, even if the user did not explicitly mention FE schemas, because the corresponding FE Zod schemas may need to be updated in the same task. Triggers even if the user phrases it as backend cleanup, frontend cleanup, form validation, type safety, schema review, or "vygeneruj/uprav FE schemas" for an IQF module.
 ---
 
 # IQF FE Schema Generator
@@ -42,6 +42,21 @@ Existing FE schemas are useful for layout, naming, imports, Zod style, and exist
 6. Generate or update only the minimal set of schema files needed.
 7. Update exports (`index.ts`) only when the local module pattern exports schemas from there.
 8. Run the narrowest practical verification available, such as TypeScript/package check or a targeted grep/read review when a full check is too expensive.
+
+## Automatic Sync After Backend Contract Edits
+
+When you create, edit, rename, or remove an IQF backend `@View`, `Dto`, Java `record`, command, payload, or similar API contract class during any task, treat the FE Zod schema sync as part of the same task before finishing. This applies even when the original user request only mentioned backend work.
+
+After such a backend contract edit:
+
+1. Identify which frontend schemas, inferred types, API callers, forms, tables, or hooks consume the changed backend contract.
+2. Re-read the final backend source after your BE edits; do not rely on the pre-edit shape or memory of the change.
+3. Update the affected FE Zod schemas in place using the normal mapping, nullability, validation, inheritance, and cross-module rules in this skill.
+4. Remove FE fields for removed backend contract members, add FE fields for new members, and update types/nullability/validation for changed members.
+5. If no matching FE schema exists, search for the relevant FE module and create the schema only when the local layout and scope are clear. If the target is ambiguous or the change would expand into unrelated modules, report the ambiguity before making broad edits.
+6. Run the narrowest practical verification for both the backend edit and the affected frontend schema code.
+
+Do not skip this sync just because the user did not explicitly ask for Zod changes. In IQF projects, backend projection/payload contracts and FE schemas are coupled; leaving them out of sync creates runtime validation and type safety failures.
 
 ## Backend Sources
 
