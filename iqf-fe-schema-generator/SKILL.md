@@ -1,7 +1,7 @@
 ---
 name: iqf-fe-schema-generator
 description: >-
-  Primary skill for IQF frontend Zod schemas and backend-to-frontend schema mapping. Always use this skill before generic frontend-code-quality when an IQF project task mentions Zod schemas, FE schemas, schema.ts, schemas/*.ts, Zod exports, backend @View interfaces/classes, DTOs, Java records, commands, BrowseSchema, DetailSchema, FormSchema, SaveSchema, UpdateSchema, module schema sync, or aligning frontend schemas with current BE sources. Also use this skill automatically whenever you create, edit, or remove an IQF backend @View, DTO, Java record, command, payload, or similar API contract class, even if the user did not explicitly mention FE schemas, because the corresponding FE Zod schemas may need to be updated in the same task. Triggers even if the user phrases it as backend cleanup, frontend cleanup, form validation, type safety, schema review, or "vygeneruj/uprav FE schemas" for an IQF module.
+  Generate, find, and update frontend Zod schemas for IQF backend-to-frontend contract mapping. Use when an IQF task mentions Zod schemas, FE schemas, schema.ts, schemas/*.ts, Zod exports, backend @View interfaces/classes, DTOs, Java records, commands, BrowseSchema, DetailSchema, FormSchema, SaveSchema, UpdateSchema, module schema sync, or aligning frontend schemas with current BE sources. Also use after editing an IQF backend @View, DTO, Java record, command, payload, or similar API contract when the serialized contract shape changed or likely affects FE validation/types. Do not trigger for unrelated backend/frontend cleanup just because the repository is IQF.
 ---
 
 # IQF FE Schema Generator
@@ -45,7 +45,7 @@ Existing FE schemas are useful for layout, naming, imports, Zod style, and exist
 
 ## Automatic Sync After Backend Contract Edits
 
-When you create, edit, rename, or remove an IQF backend `@View`, `Dto`, Java `record`, command, payload, or similar API contract class during any task, treat the FE Zod schema sync as part of the same task before finishing. This applies even when the original user request only mentioned backend work.
+When you create, edit, rename, or remove an IQF backend `@View`, `Dto`, Java `record`, command, payload, or similar API contract class during any task, treat the FE Zod schema sync as part of the same task before finishing if the serialized contract shape changed or likely affects FE validation/types. This applies even when the original user request only mentioned backend work.
 
 After such a backend contract edit:
 

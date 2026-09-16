@@ -1,7 +1,7 @@
 ---
 name: frontend-code-quality
 description: >-
-  General frontend coding discipline for JavaScript, TypeScript, React, and Next.js implementation work. Use for substantive frontend component, hook, utility, state, form, UI logic, refactor, or review tasks where code quality choices matter. This is a generic fallback: when any available frontend-adjacent skill is more specific, use that skill first and use frontend-code-quality only as supporting guidance. Examples: IQF Zod/schema.ts/@View/DTO work should use iqf-fe-schema-generator; React Router loaders/actions/fetchers/navigation should use react-router; React/Next.js performance-sensitive work should also use vercel-react-best-practices; compound components/render props/component APIs should also use vercel-composition-patterns; advanced TypeScript type utilities should also use typescript-advanced-types.
+  General frontend code-quality guardrail for substantive JavaScript, TypeScript, React, and Next.js implementation, refactor, or review work. Use it as a fallback when no narrower frontend skill owns the domain decision; otherwise let the narrower skill lead and apply this only for small diffs, local style, narrow exports, and TypeScript/React hygiene. Use iqf-fe-schema-generator for IQF Zod/schema/@View/DTO work, react-router for route loaders/actions/navigation, vercel-react-best-practices for React/Next.js performance-sensitive work, vercel-composition-patterns for component API design, and typescript-advanced-types for complex type-level APIs.
 ---
 
 # Frontend Code Quality
@@ -219,92 +219,6 @@ Keep code inside the component when it depends naturally on local closure state 
 Use React performance tools deliberately. Do not add `useMemo`, `useCallback`, refs, or memoized components by default. Follow the repo's existing React Compiler and memoization conventions.
 
 When modern React APIs are already part of the project, use patterns such as `startTransition`, `useDeferredValue`, or `useEffectEvent` where they directly match the problem. Do not add them for novelty.
-
-## Practical FE Patterns From Strong Codebases
-
-These patterns are extracted from a production FE codebase with React Router, React 19, Tailwind, `react-intl`, `lodash-es`, `clsx`, and `tailwind-merge`. Treat them as general guidance, not as framework-specific rules. Use the tool-specific parts only when those tools, or equivalent local conventions, are already present in the project.
-
-Keep shared components thin and composable. A component should own the reusable interaction or visual contract, while feature-specific content stays in the route or feature file. Prefer render props or explicit slots only when the caller truly needs to control markup.
-
-Example shape:
-
-```tsx
-<Quiz
-  quiz={quiz}
-  renderQuestion={(question, options) => (
-    <Screen>
-      <Screen.Heading>{question.question}</Screen.Heading>
-      {options}
-    </Screen>
-  )}
-/>
-```
-
-Keep feature modules local. If a route or feature has its own config, assets, game logic, or data shape, keep those files next to the feature rather than moving them into global shared folders too early.
-
-Good local grouping:
-
-```text
-routes/gas/
-- index.tsx
-- quiz.tsx
-- picture.ts
-- game/config.ts
-- game/utils.ts
-- game/types.ts
-```
-
-Use small local components inside a route when they describe real UI sections and reduce noise in the main component. Keep them unexported unless another file imports them.
-
-Prefer centralized utility wrappers for cross-cutting conventions. For class names, use the project's existing `cn`/`clsx`/`twMerge` style helper instead of manually joining strings or adding another class utility. If the project does not use such a helper, do not introduce one for a one-off change.
-
-Example:
-
-```ts
-export const cn: typeof clsx = (...params) => {
-  return twMerge(clsx(...params));
-};
-```
-
-Use data/config objects for stable constants and content mappings. Prefer `satisfies` when it preserves literal safety without forcing broad explicit types. Use `as const` only for literal config objects or tuples where the project already uses that style and the literal narrowing is useful.
-
-Example:
-
-```ts
-export default {
-  GAME_DURATION: 30,
-  SPAWN_INTERVAL: 2000,
-  SPECIAL_OBJECT_SPAWN_CHANCE: 0.25,
-} as const;
-```
-
-Prefer hook extraction for real external synchronization, not for every block of logic. Good hook candidates include timers, DOM event listeners, portals, scroll tracking, query-state synchronization, virtualized lists, and browser API integration. Pure render derivations can usually stay inline.
-
-When effects are necessary, make them honest and cleanup-safe:
-
-- Use `AbortController` for DOM listeners when useful
-- Cancel throttled or debounced callbacks during cleanup
-- Keep dependencies accurate instead of hiding stale closures
-- Encapsulate repeated browser synchronization in one hook
-
-Use existing utility libraries for non-trivial collection operations. If `lodash-es` or an equivalent utility library is already installed and used for that category of operation, prefer `groupBy`, `maxBy`, `shuffle`, `throttle`, or similar utilities over hand-rolled equivalents. Do not add or expand a utility dependency for trivial logic.
-
-Use i18n at the boundary where copy is created. Keep message IDs explicit and stable, and avoid scattering hardcoded UI copy when the app already uses `react-intl` or a similar i18n layer.
-
-For asset-heavy features, collect transformed imports into a local object and pass that object to shared rendering components. This keeps components focused on behavior and layout instead of import plumbing.
-
-Example:
-
-```ts
-export default {
-  hero: {
-    picture: heroPicture,
-    placeholder: heroPlaceholder,
-  },
-};
-```
-
-Prefer direct JSX over premature configuration. Use config/data when the thing is data-like; use JSX when the thing is layout, accessibility, or interaction.
 
 ## Simplicity Of Functions And Components
 
